@@ -1,0 +1,115 @@
+openapi: 3.0.0
+info:
+  title: API de Itens
+  description: API para gerenciamento de itens com endpoints GET e POST
+  version: 1.0.0
+servers:
+  - url: http://localhost:5000
+    description: Servidor de desenvolvimento local
+paths:
+  /api/items:
+    get:
+      summary: Retorna todos os itens
+      description: Endpoint para listar todos os itens cadastrados
+      responses:
+        '200':
+          description: Lista de itens retornada com sucesso
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  items:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Item'
+                  count:
+                    type: integer
+                    description: Número total de itens
+    post:
+      summary: Cria um novo item
+      description: Endpoint para adicionar um novo item à lista
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - name
+              properties:
+                name:
+                  type: string
+                  description: Nome do item
+                description:
+                  type: string
+                  description: Descrição detalhada do item
+      responses:
+        '201':
+          description: Item criado com sucesso
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  item:
+                    $ref: '#/components/schemas/Item'
+        '400':
+          description: Dados inválidos fornecidos
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+  /api/items/{item_id}:
+    get:
+      summary: Retorna um item específico
+      description: Endpoint para obter detalhes de um item pelo ID
+      parameters:
+        - name: item_id
+          in: path
+          required: true
+          description: ID do item a ser retornado
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Item retornado com sucesso
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  item:
+                    $ref: '#/components/schemas/Item'
+        '404':
+          description: Item não encontrado
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+components:
+  schemas:
+    Item:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: ID único do item
+        name:
+          type: string
+          description: Nome do item
+        description:
+          type: string
+          description: Descrição detalhada do item
+        created_at:
+          type: string
+          format: date-time
+          description: Data e hora de criação do item

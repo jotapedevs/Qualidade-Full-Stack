@@ -1,0 +1,88 @@
+name: API Tests Workflow
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+
+jobs:
+  python-tests:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.11'
+    
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install flask pytest
+    
+    - name: Run pytest tests
+      run: |
+        cd tests/pytest
+        python -m pytest test_api.py -v
+    
+    - name: Run unittest tests
+      run: |
+        cd tests/unittest
+        python -m unittest test_api.py
+  
+  java-tests:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Set up JDK 17
+      uses: actions/setup-java@v3
+      with:
+        java-version: '17'
+        distribution: 'temurin'
+    
+    - name: Install dependencies
+      run: |
+        cd tests/junit
+        mkdir -p lib
+        wget -O lib/junit-jupiter-api-5.9.1.jar https://repo1.maven.org/maven2/org/junit/jupiter/junit-jupiter-api/5.9.1/junit-jupiter-api-5.9.1.jar
+        wget -O lib/junit-jupiter-engine-5.9.1.jar https://repo1.maven.org/maven2/org/junit/jupiter/junit-jupiter-engine/5.9.1/junit-jupiter-engine-5.9.1.jar
+        wget -O lib/junit-platform-commons-1.9.1.jar https://repo1.maven.org/maven2/org/junit/platform/junit-platform-commons/1.9.1/junit-platform-commons-1.9.1.jar
+    
+    - name: Start API server
+      run: |
+        cd api
+        python app.py &
+        sleep 5  # Aguardar a inicialização do servidor
+    
+    - name: Compile and run JUnit tests
+      run: |
+        cd tests/junit
+        javac -cp .:lib/* ApiTest.java
+        java -cp .:lib/* org.junit.platform.console.ConsoleLauncher --select-class=ApiTest
+  
+  javascript-tests:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Set up Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '18'
+    
+    - name: Install dependencies
+      run: |
+        cd tests/jest
+        npm init -y
+        npm install --save-dev jest axios
+    
+    - name: Run Jest tests
+      run: |
+        cd tests/jest
+        npx jest api.test.js
