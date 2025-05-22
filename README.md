@@ -100,8 +100,7 @@ Consulte o arquivo README.md original na raiz do projeto para instruções detal
 
 ## Deployment
 
-O frontend está implantado permanentemente em: https://cbcyzfyh.manus.space
-
+O frontend está implantado permanentemente em: https://glmoytej.manus.space/
 Para funcionalidade completa, a API backend precisa estar acessível publicamente.
 
 ## Licença
