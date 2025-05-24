@@ -1,3 +1,7 @@
+# Jota Pê, conserta esse repositório!! É feio ter o nome qualidade full stack e o camarada se deparar com a presepada acima.
+
+---
+
 # Qualidade Full Stack
 
 Este repositório contém um projeto completo de API com frontend, testes automatizados, integração contínua e ferramentas de qualidade/stress.
